@@ -2,19 +2,27 @@ from flask import Flask, render_template, request
 import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 app = Flask(__name__)
+
+# Set up Flask-Limiter
+limiter = Limiter(app, key_func=get_remote_address)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Apply rate limiting to the /boost endpoint
+@limiter.limit("5 per minute")  # Limit to 5 requests per minute from the same IP address
 @app.route('/boost', methods=['POST'])
 def boost_account():
     target_url = request.form['target_url']
     num_followers = int(request.form['num_followers'])
     boost_method = request.form['boost_method']
 
+    # Call the appropriate boosting function based on the selected method
     if boost_method == 'facebook_followers':
         boost_facebook_followers(target_url, num_followers)
     elif boost_method == 'facebook_likes':
@@ -48,6 +56,7 @@ def boost_account():
 
     return "Boosting completed!"
 
+# Example of Boosting Function for Instagram (similar functions should be written for other platforms)
 def boost_facebook_followers(target_url, num_followers):
     # Facebook followers boosting logic
     pass
@@ -97,6 +106,8 @@ def boost_instagram_followers(target_url, num_followers):
     
     # Close the web driver
     driver.quit()
+
+# Similar functions for other platforms (Instagram, Twitter, Telegram, TikTok)
 
 def boost_instagram_likes(target_url, num_followers):
     # Instagram likes boosting logic
