@@ -1,1 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Boosting</title>
+</head>
+<body>
+    <h1>Social Media Boosting</h1>
+    <form action="/boost" method="POST">
+        <label for="target_url">Target Account URL:</label>
+        <input type="text" id="target_url" name="target_url" required><br>
+        
+        <label for="num_followers">Desired Number of Followers:</label>
+        <input type="number" id="num_followers" name="num_followers" required><br>
+        
+        <label for="boost_method">Boosting Method:</label>
+        <select id="boost_method" name="boost_method" required>
+            <option value="boost_facebook_followers">Boost Facebook Followers</option>
+            <option value="boost_facebook_likes">Boost Facebook Likes</option>
+            <option value="boost_facebook_comments">Boost Facebook Comments</option>
+            <option value="boost_twitter_followers">Boost Twitter Followers</option>
+            <option value="boost_twitter_likes">Boost Twitter Likes</option>
+            <option value="boost_twitter_comments">Boost Twitter Comments</option>
+            <option value="boost_telegram_followers">Boost Telegram Followers</option>
+            <option value="boost_telegram_likes">Boost Telegram Likes</option>
+            <option value="boost_telegram_comments">Boost Telegram Comments</option>
+            <option value="boost_tiktok_followers">Boost TikTok Followers</option>
+            <option value="boost_tiktok_likes">Boost TikTok Likes</option>
+            <option value="boost_tiktok_comments">Boost TikTok Comments</option>
+        </select><br>
 
+        <button type="submit">Boost</button>
+    </form>
+</body>
+</html>
