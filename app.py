@@ -25,39 +25,39 @@ def boost_account():
     num_followers = int(request.form['num_followers'])
     boost_method = request.form['boost_method']
 
-    # Call the appropriate boosting function based on the selected method
-    if boost_method == 'facebook_followers':
-        boost_facebook_followers(target_url, num_followers)
-    elif boost_method == 'facebook_likes':
-        boost_facebook_likes(target_url, num_followers)
-    elif boost_method == 'facebook_comments':
-        boost_facebook_comments(target_url, num_followers)
-    elif boost_method == 'instagram_followers':
-        result = boost_instagram_followers(target_url, num_followers)
-    elif boost_method == 'instagram_likes':
-        boost_instagram_likes(target_url, num_followers)
-    elif boost_method == 'instagram_comments':
-        boost_instagram_comments(target_url, num_followers)
-    elif boost_method == 'twitter_followers':
-        boost_twitter_followers(target_url, num_followers)
-    elif boost_method == 'twitter_likes':
-        boost_twitter_likes(target_url, num_followers)
-    elif boost_method == 'twitter_comments':
-        boost_twitter_comments(target_url, num_followers)
-    elif boost_method == 'telegram_followers':
-        boost_telegram_followers(target_url, num_followers)
-    elif boost_method == 'telegram_likes':
-        boost_telegram_likes(target_url, num_followers)
-    elif boost_method == 'telegram_comments':
-        boost_telegram_comments(target_url, num_followers)
-    elif boost_method == 'tiktok_followers':
-        result = boost_tiktok_followers(target_url, num_followers)
-    elif boost_method == 'tiktok_likes':
-        boost_tiktok_likes(target_url, num_followers)
-    elif boost_method == 'tiktok_comments':
-        boost_tiktok_comments(target_url, num_followers)
+    result = ""
+    
+    try:
+        # Call the appropriate boosting function based on the selected method
+        if boost_method == 'boost_facebook_followers':
+            result = boost_facebook_followers(target_url, num_followers)
+        elif boost_method == 'boost_facebook_likes':
+            result = boost_facebook_likes(target_url, num_followers)
+        elif boost_method == 'boost_facebook_comments':
+            result = boost_facebook_comments(target_url, num_followers)
+        elif boost_method == 'boost_twitter_followers':
+            result = boost_twitter_followers(target_url, num_followers)
+        elif boost_method == 'boost_twitter_likes':
+            result = boost_twitter_likes(target_url, num_followers)
+        elif boost_method == 'boost_twitter_comments':
+            result = boost_twitter_comments(target_url, num_followers)
+        elif boost_method == 'boost_telegram_followers':
+            result = boost_telegram_followers(target_url, num_followers)
+        elif boost_method == 'boost_telegram_likes':
+            result = boost_telegram_likes(target_url, num_followers)
+        elif boost_method == 'boost_telegram_comments':
+            result = boost_telegram_comments(target_url, num_followers)
+        elif boost_method == 'boost_tiktok_followers':
+            result = boost_tiktok_followers(target_url, num_followers)
+        elif boost_method == 'boost_tiktok_likes':
+            result = boost_tiktok_likes(target_url, num_followers)
+        elif boost_method == 'boost_tiktok_comments':
+            result = boost_tiktok_comments(target_url, num_followers)
 
-    return render_template('index.html', result=result)
+        return render_template('index.html', result=result)
+    
+    except Exception as e:
+        return render_template('index.html', result=f"Error occurred: {str(e)}")
 
 # Boosting Functions
 
