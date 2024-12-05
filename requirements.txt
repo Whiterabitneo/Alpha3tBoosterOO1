@@ -1,5 +1,6 @@
 Flask
 Flask-Limiter
 selenium
+webdriver-manager
 redis
 gunicorn
