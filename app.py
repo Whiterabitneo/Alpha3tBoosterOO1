@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request
 import time
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -9,7 +11,7 @@ app = Flask(__name__)
 
 # Set up Flask-Limiter
 limiter = Limiter(key_func=get_remote_address)
-limiter.init_app(app)  # Correct initialization of the limiter
+limiter.init_app(app)
 
 @app.route('/')
 def index():
@@ -31,7 +33,7 @@ def boost_account():
     elif boost_method == 'facebook_comments':
         boost_facebook_comments(target_url, num_followers)
     elif boost_method == 'instagram_followers':
-        boost_instagram_followers(target_url, num_followers)
+        result = boost_instagram_followers(target_url, num_followers)
     elif boost_method == 'instagram_likes':
         boost_instagram_likes(target_url, num_followers)
     elif boost_method == 'instagram_comments':
@@ -49,15 +51,16 @@ def boost_account():
     elif boost_method == 'telegram_comments':
         boost_telegram_comments(target_url, num_followers)
     elif boost_method == 'tiktok_followers':
-        boost_tiktok_followers(target_url, num_followers)
+        result = boost_tiktok_followers(target_url, num_followers)
     elif boost_method == 'tiktok_likes':
         boost_tiktok_likes(target_url, num_followers)
     elif boost_method == 'tiktok_comments':
         boost_tiktok_comments(target_url, num_followers)
 
-    return "Boosting completed!"
+    return render_template('index.html', result=result)
 
-# Example of Boosting Function for Instagram (similar functions should be written for other platforms)
+# Boosting Functions
+
 def boost_facebook_followers(target_url, num_followers):
     # Facebook followers boosting logic
     pass
@@ -71,44 +74,40 @@ def boost_facebook_comments(target_url, num_followers):
     pass
 
 def boost_instagram_followers(target_url, num_followers):
-    # Instagram followers boosting logic
-    driver = webdriver.Chrome()
-    driver.get(target_url)
-    time.sleep(5)
-    
-    # Click the "Follow" button
-    follow_button = driver.find_element_by_xpath("//button[contains(text(), 'Follow')]")
-    follow_button.click()
-    time.sleep(3)
-    
-    # Unfollow the account to reset the follower count
-    unfollow_button = driver.find_element_by_xpath("//button[contains(text(), 'Following')]")
-    unfollow_button.click()
-    time.sleep(3)
-    
-    # Click the "Follow" button again to boost followers
-    follow_button = driver.find_element_by_xpath("//button[contains(text(), 'Follow')]")
-    follow_button.click()
-    time.sleep(3)
-    
-    # Refresh the page to see the updated follower count
-    driver.refresh()
-    time.sleep(5)
-    
-    # Find the updated follower count
-    followers_count = driver.find_element_by_xpath("//a[contains(@href, '/followers/')]")
-    current_followers = int(followers_count.text.replace(",", ""))
-    
-    # Check if the target has reached the desired number of followers
-    if current_followers >= num_followers:
-        print(f"Target account {target_url} has been boosted to {num_followers} followers.")
-    else:
-        print(f"Failed to boost {target_url} to {num_followers} followers. Current followers: {current_followers}")
-    
-    # Close the web driver
-    driver.quit()
+    try:
+        driver = webdriver.Chrome()
+        driver.get(target_url)
+        time.sleep(5)
 
-# Similar functions for other platforms (Instagram, Twitter, Telegram, TikTok)
+        # Wait for the "Follow" button to be available and click it
+        follow_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Follow')]"))
+        )
+        follow_button.click()
+        time.sleep(3)
+
+        # Refresh the page and check the follower count
+        driver.refresh()
+        time.sleep(5)
+
+        # Get the updated follower count
+        followers_count = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//a[contains(@href, '/followers/')]"))
+        )
+        current_followers = int(followers_count.text.replace(",", ""))
+
+        # Check if the current followers match the desired count
+        if current_followers >= num_followers:
+            result = f"Successfully boosted {target_url} to {num_followers} followers."
+        else:
+            result = f"Failed to boost {target_url} to {num_followers} followers. Current followers: {current_followers}"
+
+        driver.quit()
+        return result
+
+    except Exception as e:
+        driver.quit()
+        return f"An error occurred while boosting Instagram followers: {e}"
 
 def boost_instagram_likes(target_url, num_followers):
     # Instagram likes boosting logic
@@ -143,8 +142,40 @@ def boost_telegram_comments(target_url, num_followers):
     pass
 
 def boost_tiktok_followers(target_url, num_followers):
-    # TikTok followers boosting logic
-    pass
+    try:
+        driver = webdriver.Chrome()
+        driver.get(target_url)
+        time.sleep(5)
+
+        # Wait for the "Follow" button to be available and click it
+        follow_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Follow')]"))
+        )
+        follow_button.click()
+        time.sleep(3)
+
+        # Refresh the page and check the follower count
+        driver.refresh()
+        time.sleep(5)
+
+        # Get the updated follower count
+        followers_count = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//strong[contains(@class, 'follower-count')]"))
+        )
+        current_followers = int(followers_count.text.replace(",", ""))
+
+        # Check if the current followers match the desired count
+        if current_followers >= num_followers:
+            result = f"Successfully boosted {target_url} to {num_followers} followers."
+        else:
+            result = f"Failed to boost {target_url} to {num_followers} followers. Current followers: {current_followers}"
+
+        driver.quit()
+        return result
+
+    except Exception as e:
+        driver.quit()
+        return f"An error occurred while boosting TikTok followers: {e}"
 
 def boost_tiktok_likes(target_url, num_followers):
     # TikTok likes boosting logic
